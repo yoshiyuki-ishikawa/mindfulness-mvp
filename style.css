@@ -1,0 +1,239 @@
+:root {
+    /* カラーパレット V2: Soft Off-White & Soft Charcoal */
+    --bg-color: #F9F9F7;
+    --text-color: #4A4A4A;
+    --text-sub-color: #C0C0C0;
+    /* より薄く */
+
+    /* フォント V2 */
+    --font-main: 'Noto Sans JP', sans-serif;
+
+    /* イージング V2: Organic Motion */
+    --ease-organic: cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Deep Warm Grey */
+        --bg-color: #202225;
+        --text-color: #E5E5E7;
+        --text-sub-color: #606060;
+    }
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body,
+html {
+    height: 100%;
+    width: 100%;
+    font-family: var(--font-main);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow: hidden;
+    /* フォントの最適化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    cursor: default;
+    user-select: none;
+    /* テキスト選択不可にして没入感を高める */
+}
+
+#main-display {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+#phase-text {
+    /* V2 Typography: Light/Thin, Wide Spacing */
+    font-size: clamp(4rem, 20vw, 8rem);
+    font-weight: 100;
+    /* Thin */
+    letter-spacing: 0.2em;
+    /* たっぷりとした余白 */
+    opacity: 0;
+    will-change: transform, opacity;
+    /* 漢字1文字の美しさを引き出す */
+    font-feature-settings: "palt";
+}
+
+#phase-text.active {
+    opacity: 1;
+}
+
+/* 設定トリガー（画面下部の隠しエリア） */
+#settings-trigger {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    /* タップしやすいよう少し広げる */
+    z-index: 10;
+    cursor: default;
+}
+
+/* 設定パネル */
+#settings-panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--bg-color);
+    padding: 2rem;
+    z-index: 20;
+    transition: transform 0.4s var(--ease-organic);
+    /* 境界線をなくし、影で浮遊感を出す */
+    border-top: none;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.03);
+}
+
+#settings-panel.hidden {
+    transform: translateY(110%);
+    /* 完全に隠す */
+}
+
+.settings-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.setting-item label {
+    font-size: 0.9rem;
+    color: var(--text-sub-color);
+    font-weight: 300;
+}
+
+.setting-item input {
+    width: 50px;
+    padding: 0.2rem;
+    font-size: 1.1rem;
+    border: none;
+    border-bottom: 1px solid var(--text-sub-color);
+    background: transparent;
+    color: var(--text-color);
+    text-align: center;
+    font-family: inherit;
+    font-weight: 300;
+    transition: border-color 0.3s;
+}
+
+.setting-item input:focus {
+    outline: none;
+    border-bottom: 1px solid var(--text-color);
+}
+
+#close-settings {
+    background: none;
+    border: 1px solid var(--text-sub-color);
+    color: var(--text-sub-color);
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px;
+    /* 丸みを持たせる */
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 300;
+    margin-left: auto;
+    transition: all 0.3s ease;
+}
+
+#close-settings:hover {
+    border-color: var(--text-color);
+    color: var(--text-color);
+}
+
+/* 
+ * Animation Definitions V2: Organic Motion 
+ * 機械的な動きを排除し、生物的な揺らぎを表現
+ */
+
+@keyframes inhale-anim {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+}
+
+@keyframes hold-sculpting {
+
+    /* Living Stillness: わずかに漂う */
+    0% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.165);
+        opacity: 0.95;
+    }
+
+    100% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+}
+
+@keyframes exhale-anim {
+    0% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+}
+
+/* フェーズごとのスタイル適用 */
+
+.phase-inhale {
+    animation: inhale-anim var(--current-duration) var(--ease-organic) forwards;
+    color: var(--text-color);
+}
+
+.phase-hold {
+    /* 止: 漂うような無限ループアニメーション */
+    /* durationとは無関係に、ゆっくりとした周期(6s程度)で揺らがせる */
+    animation: hold-sculpting 6s ease-in-out infinite alternate;
+    color: var(--text-color);
+}
+
+.phase-exhale {
+    animation: exhale-anim var(--current-duration) var(--ease-organic) forwards;
+    color: var(--text-color);
+}
